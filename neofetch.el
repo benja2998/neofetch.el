@@ -34,16 +34,14 @@
 	(setq proclist (cdr proclist))
 	)
 
-  (insert (format "\n"))
-
   (when (display-graphic-p)
 	(when logo-path
 	  (insert-image (create-image logo-path))
+	  (insert (format "\n"))
 	  )
 	)
   
   (insert (concat
-		   (format "\n")
 		  ;;; username@hostname
 
 		   (propertize (user-login-name) 'font-lock-face '(:foreground "purple"))
@@ -96,6 +94,7 @@
 		   (format "\n")
 		   ))
   (eshell-interrupt-process)
+  (keyboard-quit)
   )
 
 (provide 'neofetch)

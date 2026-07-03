@@ -8,7 +8,7 @@ Just copy neofetch.el to a directory in your `load-path`. Make sure to require '
 
 ## Usage
 
-While it is recommended you run it inside Eshell, it can also be ran from M-x.
+Run it in Eshell. neofetch without arguments wi
 
 ## Notes
 
