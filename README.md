@@ -8,7 +8,7 @@ Just copy neofetch.el to a directory in your `load-path`. Make sure to require '
 
 ## Usage
 
-Run it in Eshell. neofetch without arguments wi
+Run it in Eshell. neofetch without arguments will not print a logo. Run neofetch with the path to an image to get a logo
 
 ## Notes
 
