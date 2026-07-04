@@ -1,6 +1,6 @@
 # neofetch.el
 
-Neofetch program written in pure Emacs Lisp. Does not require any external programs and runs on any operating system.
+[Neofetch](https://github.com/dylanaraps/neofetch)-style program written in pure Emacs Lisp. Does not require any external programs and runs on any operating system.
 
 ## Installing
 
