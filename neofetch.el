@@ -24,15 +24,6 @@
 		(thow 'not-in-eshell "Not in eshell")
 	  )
 	)
-  
-  (setq proclist (process-list))
-
-  (setq process-count 0)
-
-  (while proclist
-	(setq process-count (1+ process-count))
-	(setq proclist (cdr proclist))
-	)
 
   (when (display-graphic-p)
 	(when logo-path
@@ -90,7 +81,7 @@
 
 		   (propertize "Running Emacs sub-processes" 'font-lock-face '(:foreground "cyan"))
 		   ": "
-		   (format "%s" process-count)
+		   (format "%s" (length (process-list)))
 		   (format "\n")
 		   ))
   (eshell-interrupt-process)
