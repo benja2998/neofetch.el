@@ -31,7 +31,7 @@
 	  (insert (format "\n"))
 	  )
 	)
-  
+
   (insert (concat
 		  ;;; username@hostname
 
@@ -47,7 +47,7 @@
 		   (format "\n")
 
 		  ;;; OS: system-type
-		   
+
 		   (propertize "OS" 'font-lock-face '(:foreground "cyan"))
 		   (format ": %s\n" system-type)
 
@@ -69,7 +69,7 @@
 		   ": "
 		   (emacs-init-time)
 		   (format "\n")
-		   
+
 		  ;;; Processors: num-processors
 
 		   (propertize "Processors" 'font-lock-face '(:foreground "cyan"))
