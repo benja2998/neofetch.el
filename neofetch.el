@@ -1,4 +1,4 @@
-;; neofetch.el
+;; neofetch.el  -*- lexical-binding: t; -*-
 
 ;; Neofetch program written in pure Emacs Lisp. Does not require any external programs and runs on any operating system.
 ;; Copyright (C) 2026 benja2998
