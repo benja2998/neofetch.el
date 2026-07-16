@@ -97,6 +97,44 @@ Return nil if no pretty representation could be found."
   (plist-get (neofetch--gnu-linux-get-os-release-plist) :pretty-name))
 
 ;;;
+;;; Exclusive to the Linux kernel.
+;;;
+
+(defun neofetch--linux-get-kernel-pretty-info ()
+  "Return a pretty representation of the Linux kernel."
+  (let* ((kernel-name (neofetch--linux-get-kernel-name))
+		(kernel-version-release (neofetch--linux-get-kernel-version-release))
+		(kernel-arch (neofetch--linux-get-kernel-arch))
+		(kernel-arch-pretty (format "(%s)" kernel-arch)))
+	(string-join
+	 (seq-remove #'null
+				 `(,kernel-name ,kernel-version-release ,kernel-arch-pretty))
+	 " ")))
+
+(defun neofetch--linux-get-kernel-name ()
+  "Return the Linux kernel name or nil."
+  (when-let* ((file "/proc/sys/kernel/ostype")
+			  ((file-readable-p file)))
+	(string-trim (neofetch--get-file-contents file))))
+
+(defun neofetch--linux-get-kernel-version-release ()
+  "Return the \"release\" part of the Linux kernel version or nil."
+  (when-let* ((file "/proc/sys/kernel/osrelease")
+			  ((file-readable-p file)))
+	(string-trim (neofetch--get-file-contents file))))
+
+(defun neofetch--linux-get-kernel-arch ()
+  "Return the machine architecture used by the Linux kernel or nil."
+  (when-let* ((file "/proc/sys/kernel/arch")
+			  ((file-readable-p file)))
+	(string-trim (neofetch--get-file-contents file))))
+
+(defun neofetch--linux-get-kernel-pretty-arch ()
+  "Return a pretty representation of the machine architecture or nil."
+  (when-let* ((arch (neofetch--linux-get-kernel-arch)))
+	(format "(%s)" arch)))
+
+;;;
 ;;; Common
 ;;;
 
@@ -114,6 +152,21 @@ Return nil if no pretty representation could be found."
 	('haiku			"Haiku")
 	('android		(or (neofetch--android-get-pretty-name)
 						"Android"))
+	(_ (symbol-name system-type))))
+
+(defun neofetch--get-kernel-pretty-info ()
+  "Return a pretty representation of the kernel."
+  (pcase system-type
+	('gnu			"Hurd")
+	('gnu/linux     (or (neofetch--linux-get-kernel-pretty-info)
+						"Linux"))
+	('gnu/kfreebsd	"GNU/FreeBSD")
+	('darwin		"XNU")				; XNU Is Not Unix
+	('ms-dos		"MS-DOS")
+	('windows-nt	"NT")
+	('cygwin		"Cygwin")
+	('haiku			"Haiku")
+	('android		"Linux (Android)")
 	(_ (symbol-name system-type))))
 
 ;;;
@@ -154,6 +207,10 @@ Return nil if no pretty representation could be found."
 
 		   (propertize "OS" 'font-lock-face '(:foreground "cyan"))
 		   (format ": %s\n" (neofetch--get-os-pretty-name))
+
+		  ;;; Kernel: kernel
+		   (propertize "Kernel" 'font-lock-face '(:foreground "cyan"))
+		   (format ": %s\n" (neofetch--get-kernel-pretty-info))
 
 		  ;;; Emacs version: emacs-version
 
