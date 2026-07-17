@@ -134,6 +134,16 @@ Return nil if no pretty representation could be found."
   (when-let* ((arch (neofetch--linux-get-kernel-arch)))
 	(format "(%s)" arch)))
 
+(defun neofetch--linux-android-get-kernel-pretty-info ()
+  "Return a pretty representation of the Linux kernel (Android)."
+  (let* ((kernel-name (neofetch--linux-get-kernel-name))
+		(kernel-version-release (neofetch--linux-get-kernel-version-release))
+		(cpu-architecture (neofetch--android-get-prop "ro.product.cpu.abi")))
+	(string-join
+	 (seq-remove #'null
+				 `(,kernel-name ,kernel-version-release ,cpu-architecture))
+	 " ")))
+
 ;;;
 ;;; Common
 ;;;
@@ -166,7 +176,8 @@ Return nil if no pretty representation could be found."
 	('windows-nt	"NT")
 	('cygwin		"Cygwin")
 	('haiku			"Haiku")
-	('android		"Linux (Android)")
+	('android		(or (neofetch--linux-android-get-kernel-pretty-info)
+						"Linux (Android)"))
 	(_ (symbol-name system-type))))
 
 ;;;
