@@ -105,10 +105,12 @@ Return nil if no pretty representation could be found."
   (let* ((kernel-name (neofetch--linux-get-kernel-name))
 		(kernel-version-release (neofetch--linux-get-kernel-version-release))
 		(kernel-arch (neofetch--linux-get-kernel-arch))
-		(kernel-arch-pretty (format "(%s)" kernel-arch)))
+		(kernel-arch-formatted (if kernel-arch
+								   (format "(%s)" kernel-arch)
+								 nil)))
 	(string-join
 	 (seq-remove #'null
-				 `(,kernel-name ,kernel-version-release ,kernel-arch-pretty))
+				 `(,kernel-name ,kernel-version-release ,kernel-arch-formatted))
 	 " ")))
 
 (defun neofetch--linux-get-kernel-name ()
