@@ -48,6 +48,21 @@ If no file can be read, return nil."
 	(neofetch--get-file-contents file)))
 
 ;;;
+;;; Exclusive to the 'android' 'system-type'.
+;;;
+
+(defun neofetch--android-get-prop (prop)
+  "Return an Android system property or nil."
+  (car (process-lines "getprop" prop)))
+
+(defun neofetch--android-get-pretty-name ()
+  "Return a pretty representation of the OS name for Android systems.
+
+Return nil if no pretty representation could be found."
+  (let* ((release (neofetch--android-get-prop "ro.product.build.version.release")))
+	(format "Android %s" release)))
+
+;;;
 ;;; Exclusive to the 'gnu/linux' 'system-type'.
 ;;;
 
@@ -93,7 +108,8 @@ Return nil if no pretty representation could be found."
 	('windows-nt	"Microsoft Windows")
 	('cygwin		"Cygwin")
 	('haiku			"Haiku")
-	('android		"Android")
+	('android		(or (neofetch--android-get-pretty-name)
+						"Android"))
 	(_ (symbol-name system-type))))
 
 ;;;
