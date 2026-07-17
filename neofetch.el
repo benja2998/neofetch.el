@@ -87,7 +87,7 @@ For details: https://www.man7.org/linux/man-pages/man5/os-release.5.html"
 				   (split-string (or (neofetch--gnu-linux-read-os-release) "") "\n" t)))))
 
 (defun neofetch--gnu-linux-get-distro-pretty-name ()
-  "Return a pretty representation of the OS name for GNU/Linu systems.
+  "Return a pretty representation of the OS name for GNU/Linux systems.
 
 Return nil if no pretty representation could be found."
   (plist-get (neofetch--gnu-linux-get-os-release-plist) :pretty-name))
