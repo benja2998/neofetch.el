@@ -53,7 +53,8 @@ If no file can be read, return nil."
 
 (defun neofetch--android-get-prop (prop)
   "Return an Android system property or nil."
-  (car (process-lines "getprop" prop)))
+  (car (ignore-error 'error
+		 (process-lines "getprop" prop))))
 
 (defun neofetch--android-get-pretty-name ()
   "Return a pretty representation of the OS name for Android systems.
