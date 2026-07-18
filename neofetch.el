@@ -61,7 +61,10 @@ If no file can be read, return nil."
 
 Return nil if no pretty representation could be found."
   (let* ((release (neofetch--android-get-prop "ro.product.build.version.release")))
-	(format "Android %s" release)))
+	(string-join
+	 (seq-remove #'null
+				 `("Android" ,release))
+	 " ")))
 
 ;;;
 ;;; Exclusive to the 'gnu/linux' 'system-type'.
