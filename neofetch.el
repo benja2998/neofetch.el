@@ -16,6 +16,110 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+;;;
+;;; Utils
+;;;
+
+(defun neofetch--pairs-to-plist (pairs)
+  "Convert PAIRS into a plist.
+
+PAIRS is expected to be a list of (\"key\" value) elements.
+
+As an example, '((\"a\" 1) (\"b\" help)) is converted to (:a 1 :b help)."
+  (apply #'append
+		 (mapcar (lambda (p)
+				   (list (intern (concat ":" (car p)))
+						 (cadr p)))
+				 pairs)))
+
+(defun neofetch--get-file-contents (filename)
+  "Return the contents of file FILENAME.
+
+Signals an error when FILENAME can't be read."
+  (with-temp-buffer
+	(insert-file-contents filename)
+	(buffer-string)))
+
+(defun neofetch--get-file-contents-of-first-readable-file (&rest filenames)
+  "Return the contents of the first readable file in FILENAMES.
+
+If no file can be read, return nil."
+  (when-let* ((file (seq-find #'file-readable-p filenames)))
+	(neofetch--get-file-contents file)))
+
+;;;
+;;; Exclusive to the 'android' 'system-type'.
+;;;
+
+(defun neofetch--android-get-prop (prop)
+  "Return an Android system property or nil."
+  (car (ignore-error 'error
+		 (process-lines "getprop" prop))))
+
+(defun neofetch--android-get-pretty-name ()
+  "Return a pretty representation of the OS name for Android systems.
+
+Return nil if no pretty representation could be found."
+  (let* ((release (neofetch--android-get-prop "ro.product.build.version.release")))
+	(string-join
+	 (seq-remove #'null
+				 `("Android" ,release))
+	 " ")))
+
+;;;
+;;; Exclusive to the 'gnu/linux' 'system-type'.
+;;;
+
+(defun neofetch--gnu-linux-read-os-release ()
+  "Return the contents of the \"os-release\" file.
+
+If no \"os-release\" file could be read, return nil.
+
+For details: https://www.man7.org/linux/man-pages/man5/os-release.5.html"
+  (neofetch--get-file-contents-of-first-readable-file "/etc/os-release" "/usr/lib/os-release"))
+
+(defun neofetch--gnu-linux-get-os-release-plist ()
+  "Return a plist with OS identification data for GNU/Linux systems.
+
+For details: https://www.man7.org/linux/man-pages/man5/os-release.5.html"
+  (neofetch--pairs-to-plist
+   (mapcar (lambda (cons)
+			 `(,(string-replace "_" "-" (downcase (car cons)))
+			   ,(string-replace "\"" "" (or (cadr cons) ""))))
+		   (mapcar (lambda (line)
+					 (split-string line "="))
+				   (split-string (or (neofetch--gnu-linux-read-os-release) "") "\n" t)))))
+
+(defun neofetch--gnu-linux-get-distro-pretty-name ()
+  "Return a pretty representation of the OS name for GNU/Linux systems.
+
+Return nil if no pretty representation could be found."
+  (plist-get (neofetch--gnu-linux-get-os-release-plist) :pretty-name))
+
+;;;
+;;; Common
+;;;
+
+(defun neofetch--get-os-pretty-name ()
+  "Return a pretty representation of the OS name."
+  (pcase system-type
+	('gnu			"GNU Hurd")
+	('gnu/linux     (or (neofetch--gnu-linux-get-distro-pretty-name)
+						"GNU/Linux"))
+	('gnu/kfreebsd	"GNU/FreeBSD")
+	('darwin		"Darwin")			; GNU-Darwin / macOS
+	('ms-dos		"MS-DOS")
+	('windows-nt	"Microsoft Windows")
+	('cygwin		"Cygwin")
+	('haiku			"Haiku")
+	('android		(or (neofetch--android-get-pretty-name)
+						"Android"))
+	(_ (symbol-name system-type))))
+
+;;;
+;;; Entry point
+;;;
+
 (defun neofetch (&optional logo-path)
   "Neofetch program written in pure Emacs Lisp. Does not require any external programs and runs on any operating system."
 
@@ -49,7 +153,7 @@
 		  ;;; OS: system-type
 
 		   (propertize "OS" 'font-lock-face '(:foreground "cyan"))
-		   (format ": %s\n" system-type)
+		   (format ": %s\n" (neofetch--get-os-pretty-name))
 
 		  ;;; Emacs version: emacs-version
 
