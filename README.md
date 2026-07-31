@@ -8,7 +8,7 @@ It will output your OS (system-type), the Emacs version, the Emacs uptime, the E
 
 ## Installing
 
-Just copy neofetch.el to a directory in your `load-path`. Make sure to require 'neofetch in your configuration file so you can run it.
+You can simply install it using `M-x package-install-file`. Packaging on MELPA is a work in progress
 
 ## Usage
 
