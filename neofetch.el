@@ -37,11 +37,7 @@
 ;;;
 
 (defun neofetch--pairs-to-plist (pairs)
-  "Convert PAIRS into a plist.
-
-PAIRS is expected to be a list of (\"key\" value) elements.
-
-As an example, '((\"a\" 1) (\"b\" help)) is converted to (:a 1 :b help)."
+  "Convert PAIRS into a plist."
   (apply #'append
 	 (mapcar (lambda (p)
 		   (list (intern (concat ":" (car p)))
@@ -69,7 +65,7 @@ If no file can be read, return nil."
 
 (defun neofetch--android-get-prop (prop)
   "Return an Android system property or nil."
-  (car (ignore-error 'error
+  (car (ignore-error t
 	 (process-lines "getprop" prop))))
 
 (defun neofetch--android-get-pretty-name ()
