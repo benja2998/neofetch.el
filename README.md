@@ -8,7 +8,7 @@ It will output your OS (system-type), the Emacs version, the Emacs uptime, the E
 
 ## Installing
 
-You can simply install it using `M-x package-install-file`. Packaging on MELPA is a work in progress
+You can simply install it using `M-x package-install-file`, then adding `(require 'neofetch)` to your config. Packaging on MELPA is a work in progress
 
 ## Usage
 
