@@ -64,7 +64,7 @@ If no file can be read, return nil."
 ;;;
 
 (defun neofetch--android-get-prop (prop)
-  "Return an Android system property or nil."
+  "Return the Android system property PROP or nil."
   (car (ignore-error t
 	 (process-lines "getprop" prop))))
 
