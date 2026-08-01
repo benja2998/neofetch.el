@@ -6,7 +6,7 @@
 ;; Author: benja2998 <benja2998@proton.me>
 ;; Maintainer: benja2998 <benja2998@proton.me>
 ;; Created: 2 July 2026
-;; Version: 1.4.0
+;; Version: 1.5.0
 
 ;; Keywords: tools
 ;; URL: https://codeberg.org/benja2998/neofetch.el
@@ -213,6 +213,8 @@ Optional argument LOGO-PATH to display a logo."
       (insert-image (create-image logo-path))
       (insert (format "\n"))))
 
+  (setq hr-line (make-string (length (concat (user-login-name) "@" (system-name))) ?-))
+
   (insert (concat
 	   ;; username@hostname
 
@@ -223,7 +225,7 @@ Optional argument LOGO-PATH to display a logo."
 
 	   ;; Horizontal line
 
-	   "-------------------------"
+	   hr-line
 
 	   (format "\n")
 
