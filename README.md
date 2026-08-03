@@ -8,7 +8,14 @@ It will output your OS (system-type), the Emacs version, the Emacs uptime, the E
 
 ## Installing
 
-You can simply install it using `M-x package-install-file`, then adding `(require 'neofetch)` to your config. Packaging on MELPA is a work in progress
+Put this in your config:
+```elisp
+(use-package neofetch
+  :ensure t
+  :vc (:url "https://codeberg.org/benja2998/neofetch.el"
+       :branch "main"))
+```
+Packaging on Melpa is work in progress
 
 ## Usage
 
