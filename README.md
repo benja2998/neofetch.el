@@ -21,6 +21,10 @@ Packaging on Melpa is work in progress
 
 Run it in Eshell. neofetch without arguments will not print a logo. Run neofetch with the path to an image to get a logo
 
+## Notes
+
+neofetch will enable iimage-mode in your eshell buffer
+
 ## Screenshot
 
 ![neofetch.el](./pic.png)
