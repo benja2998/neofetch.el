@@ -6,7 +6,7 @@
 ;; Author: benja2998 <benja2998@proton.me>
 ;; Maintainer: benja2998 <benja2998@proton.me>
 ;; Created: 2 July 2026
-;; Version: 1.6.0
+;; Version: 1.7.0
 
 ;; Keywords: tools
 ;; URL: https://codeberg.org/benja2998/neofetch.el
@@ -229,7 +229,7 @@ Optional argument LOGO-PATH to display a logo."
   (eshell/printnl (concat
 		   ;; image
 		   logo-path-if-exists
-		   
+
 		   ;; username@hostname
 
 		   (propertize (user-login-name) 'font-lock-face '(:foreground "purple"))
@@ -282,8 +282,7 @@ Optional argument LOGO-PATH to display a logo."
 
 		   (propertize "Running Emacs sub-processes" 'font-lock-face '(:foreground "cyan"))
 		   ": "
-		   (format "%s" (length (process-list)))
-		   (format "\n")))
+		   (format "%s" (length (process-list)))))
   (iimage-recenter))
 
 (provide 'neofetch)
