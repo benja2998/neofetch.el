@@ -6,7 +6,7 @@
 ;; Author: benja2998 <benja2998@proton.me>
 ;; Maintainer: benja2998 <benja2998@proton.me>
 ;; Created: 2 July 2026
-;; Version: 1.7.0
+;; Version: 1.8.0
 
 ;; Keywords: tools
 ;; URL: https://codeberg.org/benja2998/neofetch.el
@@ -36,6 +36,8 @@
 ;;;
 ;;; Utils
 ;;;
+
+(require 'eshell)
 
 (defun neofetch--pairs-to-plist (pairs)
   "Convert PAIRS into a plist."
@@ -208,82 +210,82 @@ Optional argument LOGO-PATH to display a logo."
     (if (not (eq major-mode 'eshell-mode))
 	(throw 'not-in-eshell "Not in eshell")))
 
-  (require 'bind-key)
+  (when (derived-mode-p 'eshell-mode)
+    (let ((logo-path-if-exists
+	   (when logo-path
+	     (concat "file://"
+		     logo-path
+		     (format "\n"))))
+	  (hr-line
+	   (make-string
+	    (length
+	     (concat (user-login-name) "@" (system-name))) ?-)))
 
-  (eshell/clear-scrollback)
+      (require 'bind-key)
 
-  (setq logo-path-if-exists "")
+      (eshell/clear-scrollback)
 
-  (when (display-graphic-p)
-    (when logo-path
-      (setq logo-path-if-exists
-	    (concat "file://"
-		    logo-path
-		    (format "\n")))))
+      (iimage-mode 1)
+      (unbind-key "C-l" 'iimage-mode-map)
 
-  (iimage-mode 1)
-  (unbind-key "C-l" 'iimage-mode-map)
+      (eshell/printnl (concat
+		       ;; image
+		       logo-path-if-exists
 
-  (setq hr-line (make-string (length (concat (user-login-name) "@" (system-name))) ?-))
+		       ;; username@hostname
 
-  (eshell/printnl (concat
-		   ;; image
-		   logo-path-if-exists
+		       (propertize (user-login-name) 'font-lock-face '(:foreground "purple"))
+		       "@"
+		       (propertize (system-name) 'font-lock-face '(:foreground "purple"))
+		       (format "\n")
 
-		   ;; username@hostname
+		       ;; Horizontal line
 
-		   (propertize (user-login-name) 'font-lock-face '(:foreground "purple"))
-		   "@"
-		   (propertize (system-name) 'font-lock-face '(:foreground "purple"))
-		   (format "\n")
+		       hr-line
 
-		   ;; Horizontal line
+		       (format "\n")
 
-		   hr-line
+		       ;; OS: system-type
 
-		   (format "\n")
+		       (propertize "OS" 'font-lock-face '(:foreground "cyan"))
+		       (format ": %s\n" (neofetch--get-os-pretty-name))
 
-		   ;; OS: system-type
+		       ;; Kernel: kernel
+		       (propertize "Kernel" 'font-lock-face '(:foreground "cyan"))
+		       (format ": %s\n" (neofetch--get-kernel-pretty-info))
 
-		   (propertize "OS" 'font-lock-face '(:foreground "cyan"))
-		   (format ": %s\n" (neofetch--get-os-pretty-name))
+		       ;; Emacs version: emacs-version
 
-		   ;; Kernel: kernel
-		   (propertize "Kernel" 'font-lock-face '(:foreground "cyan"))
-		   (format ": %s\n" (neofetch--get-kernel-pretty-info))
+		       (propertize "Emacs version" 'font-lock-face '(:foreground "cyan"))
+		       (format ": %s\n" emacs-version)
 
-		   ;; Emacs version: emacs-version
+		       ;; Emacs uptime: emacs-uptime
 
-		   (propertize "Emacs version" 'font-lock-face '(:foreground "cyan"))
-		   (format ": %s\n" emacs-version)
+		       (propertize "Emacs uptime" 'font-lock-face '(:foreground "cyan"))
+		       ": "
+		       (emacs-uptime)
+		       (format "\n")
 
-		   ;; Emacs uptime: emacs-uptime
+		       ;; Emacs startup time: emacs-init-time
 
-		   (propertize "Emacs uptime" 'font-lock-face '(:foreground "cyan"))
-		   ": "
-		   (emacs-uptime)
-		   (format "\n")
+		       (propertize "Emacs startup time" 'font-lock-face '(:foreground "cyan"))
+		       ": "
+		       (emacs-init-time)
+		       (format "\n")
 
-		   ;; Emacs startup time: emacs-init-time
+		       ;; Processors: num-processors
 
-		   (propertize "Emacs startup time" 'font-lock-face '(:foreground "cyan"))
-		   ": "
-		   (emacs-init-time)
-		   (format "\n")
+		       (propertize "Processors" 'font-lock-face '(:foreground "cyan"))
+		       ": "
+		       (format "%s" (num-processors))
+		       (format "\n")
 
-		   ;; Processors: num-processors
+		       ;; Running Emacs sub-processes: process-count
 
-		   (propertize "Processors" 'font-lock-face '(:foreground "cyan"))
-		   ": "
-		   (format "%s" (num-processors))
-		   (format "\n")
-
-		   ;; Running Emacs sub-processes: process-count
-
-		   (propertize "Running Emacs sub-processes" 'font-lock-face '(:foreground "cyan"))
-		   ": "
-		   (format "%s" (length (process-list)))))
-  (iimage-recenter))
+		       (propertize "Running Emacs sub-processes" 'font-lock-face '(:foreground "cyan"))
+		       ": "
+		       (format "%s" (length (process-list)))))
+      (iimage-recenter))))
 
 (provide 'neofetch)
 
